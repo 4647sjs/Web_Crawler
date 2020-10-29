@@ -34,8 +34,8 @@ def get_link_from_news_title(page_num, URL, output_file):
             req = urllib.request.Request(URL_with_page_num, headers = headers)
             source_code_from_URL = urllib.request.urlopen(req)
             soup = BeautifulSoup(source_code_from_URL, 'lxml',from_encoding='utf-8')
-            for item in soup.select('li > dl'): #포털 사이트 구조 분석 파악한 후 각 사이트의 URL 과 제목추출
-                for item_link in item.select('dt > a'):
+            for item in soup.select('ul > li > div'): #포털 사이트 구조 분석 파악한 후 각 사이트의 URL 과 제목추출
+                for item_link in item.select('div.total_tit > a'):
                     article_URL = item_link["href"] # URL 추출
                 article_Title = item_link.text # 제목 추출
 
@@ -49,7 +49,6 @@ def remove_tag(content): # 데이터 가공 함수 미완성
    cleanscript = re.sub(re_script, '', content)
    cleancss = re.sub(css_script, '', cleanscript)
    cleantext = re.sub(cleanr, '', cleancss)
-
    return cleantext
 
 
@@ -58,7 +57,9 @@ def remove_tag(content): # 데이터 가공 함수 미완성
 
 def get_text(article_URL, article_Title, output_file): # 각 사이트의 body부분을 가져오는 함수
     print(article_URL)
-    req2 = urllib.request.Request(article_URL, headers=headers)
+    print(article_Title)
+    #req2 = urllib.request.Request(article_URL, headers=headers)
+    req2 = urllib.request.Request(article_URL)
     source_code_from_url = urllib.request.urlopen(req2)
 
     soup = BeautifulSoup(source_code_from_url, 'html.parser', from_encoding='utf-8-sig')
